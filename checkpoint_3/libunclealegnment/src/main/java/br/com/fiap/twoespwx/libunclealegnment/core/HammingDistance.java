@@ -11,54 +11,54 @@ import br.com.fiap.twoespwx.libunclealegnment.util.SleepMachine;
 @Component
 public class HammingDistance extends BaseDistance {
 
-    private static final String METHOD = "HAMMING_DISTANCE";
-    private static final String ABOUT = """
+    private static final String DISTANCE_METHOD = "HAMMING_DISTANCE";
+    private static final String DESCRIPTION = """
         The Hamming Distance measures the difference between two strings of equal length by counting the number of positions where the corresponding characters differ. It is commonly used in error detection, bioinformatics, cryptography, and machine learning to assess similarity or detect changes. For example, the Hamming Distance between "ACGT" and "ACGG" is 1, as only the last character differs."
     """;
 
-    private static final List<String> REFERENCES = List.of(
+    private static final List<String> SOURCE_REFERENCES = List.of(
         "https://www.sciencedirect.com/topics/computer-science/hamming-distance",
         "https://en.wikipedia.org/wiki/Hamming_distance"
     );
 
     public HammingDistance() {
-        super(HammingDistance.METHOD, HammingDistance.ABOUT, HammingDistance.REFERENCES);
+        super(HammingDistance.DISTANCE_METHOD, HammingDistance.DESCRIPTION, HammingDistance.SOURCE_REFERENCES);
     }
 
     @Override
-    public DistanceResult run(DistanceInput input) {
+    public DistanceResult run(DistanceInput distanceInput) {
 
         SleepMachine.sleep();
 
-        List<SequenceInput> sequences = input.getSequences();
+        List<SequenceInput> sequenceInputs = distanceInput.getSequences();
         
-        String sequenceA = sequences.get(0).getSequence();
-        String sequenceB = sequences.get(1).getSequence();
-        Double distanceScore = 0.0;
-        Double similarityScore = 0.0;
-        List<String> observations = List.of("""
+        String firstSequence = sequenceInputs.get(0).getSequence();
+        String secondSequence = sequenceInputs.get(1).getSequence();
+        Double hammingScore = 0.0;
+        Double matchRatio = 0.0;
+        List<String> notes = List.of("""
             Naive implementation of Hamming Distance for small inputs, be aware! 
             The int primitive type is a signed 32 bits from -2147483648 to 2147483647
         """);
 
-        if (sequenceA.length() != sequenceB.length()) {
-            throw new IllegalArgumentException("Both string need to have the same length!\nSequence A :" + sequenceA + "\nSequence B: " + sequenceB);
+        if (firstSequence.length() != secondSequence.length()) {
+            throw new IllegalArgumentException("Both strings need to have the same length!\nSequence A :" + firstSequence + "\nSequence B: " + secondSequence);
         }
 
-        for (int i = 0; i < sequenceA.length(); i++) {
-            if (sequenceA.charAt(i) != sequenceB.charAt(i)) {
-                distanceScore++;
+        for (int i = 0; i < firstSequence.length(); i++) {
+            if (firstSequence.charAt(i) != secondSequence.charAt(i)) {
+                hammingScore++;
             }
         }
 
-        similarityScore = 1 - (distanceScore/sequenceA.length());
+        matchRatio = 1 - (hammingScore / firstSequence.length());
 
         return new DistanceResult(
-            distanceScore, 
-            similarityScore, 
-            observations, 
-            sequenceA.length(), 
-            input.getFormat()
+            hammingScore, 
+            matchRatio, 
+            notes, 
+            firstSequence.length(), 
+            distanceInput.getFormat()
         );
     }
 }
